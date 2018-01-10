@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @contextmenu.prevent>
     <img src="./assets/logo.png">
     <HelloWorld/>
   </div>
