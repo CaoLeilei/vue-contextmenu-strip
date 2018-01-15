@@ -1,9 +1,12 @@
 <template>
- <div class="context-menu__content" v-show="showContent" @contextmenu.prevent.stop>
+ <div class="context-menu__content" 
+      :style="styleName" 
+      v-show="showContent" 
+      @contextmenu.prevent.stop>
     <ul>
       <li class="context-menu--item" 
           v-for="(menu, index) in menus"
-          :class="{'has-child': menu.children && menu.children.length}"
+          :class="[{'has-child': menu.children && menu.children.length}, menu.classY ? menu.classY : '', menu.classX ? menu.classX : 'right']"
           :key="index">
         <div class="context-menu--item__inner" 
              @click="menuItemClick(menu)"
@@ -11,10 +14,11 @@
           <span>{{menu.label}}</span>
         </div>
         <hr class="context-menu--splite" v-if="menu.type == 'separator'" />
-          <!-- <vue-context-menu-content v-if="menu.children && menu.children.length" 
-                                    @click="menuItemClick"
-                                    :menus="menu.children">
-          </vue-context-menu-content> -->
+        <vue-context-menu-content v-if="menu.children && menu.children.length"
+                                  :is-root="false"
+                                  @click="menuItemClick"
+                                  :menus="menu.children">
+        </vue-context-menu-content>
       </li>
     </ul>
   </div>
@@ -30,6 +34,10 @@ export default {
     show: {
       type: Boolean,
       default: false
+    },
+    isRoot: {
+      type: Boolean,
+      default: true
     },
     clientX: Number,
     clientY: Number
@@ -47,7 +55,7 @@ export default {
     let menuContentInner = this.$el
     this.menuContentInnerWidth = menuContentInner.offsetWidth
     this.menuContentInnerHeight = menuContentInner.offsetHeight
-    this.showContent = false
+    this.showContent = !this.isRoot
   },
   watch: {
     show (value) {
@@ -56,14 +64,64 @@ export default {
     showContent (value) {
       this.$emit('update:show', value)
     },
-    clientX (value) {
-      console.log(value)
-    },
-    clientY (value) {
-      console.log(value)
+    isRoot (value) {
+      if (!value) {
+        this.showContent = true
+      } else {
+        this.showContent = false
+      }
     }
   },
   methods: {
+    setPositions (x, y) {
+      let clientWidth = window.innerWidth
+      let clientHeight = window.innerHeight
+      let left = clientWidth - x < this.menuContentInnerWidth ? (x - this.clientX - this.menuContentInnerWidth) : x - this.clientX
+      let top = clientHeight - y < this.menuContentInnerHeight ? (y - this.clientY - this.menuContentInnerHeight) : y - this.clientY
+      this.styleName = {
+        left: left + 'px',
+        top: top + 'px'
+      }
+      this.getChildPosition(left + this.clientX, top + this.clientY, this.menus)
+    },
+    getChildPosition (pX, pY, menus) {
+      let top = pY
+      let clientWidth = window.innerWidth
+      let clientHeight = window.innerHeight
+      for (let i = 0; i < menus.length; i++) {
+        if (menus[i].children && menus[i].children.length) {
+          let height = this.getChildrenHeight(menus[i].children)
+          if (top + height + 35 > clientHeight) {
+            menus[i].classY = 'bottom'
+          } else {
+            console.log('top')
+            menus[i].classY = 'top'
+          }
+          if (pX + 360 > clientWidth) {
+            menus[i].classX = 'left'
+          } else {
+            menus[i].classX = 'right'
+          }
+          console.log(height)
+        }
+        if (menus[i].type === 'separator') {
+          top += 21
+        } else {
+          top += 35
+        }
+      }
+    },
+    getChildrenHeight (menus) {
+      let height = 0
+      menus.forEach(item => {
+        if (item.type === 'separator') {
+          height += 21
+        } else {
+          height += 35
+        }
+      })
+      return height
+    },
     menuItemClick (menuItem) {
       this.$emit('click', menuItem)
     }
@@ -95,10 +153,33 @@ export default {
       background:#efefef;
     }
     .context-menu__content {
-      display: none;
-      left: 100%;
-      top: 50%;
-      margin-left: -10px;
+        display: none;
+      }
+    &.top {
+      .context-menu__content {
+        top: 50%;
+        bottom: auto;
+      }
+    }
+    &.bottom {
+      .context-menu__content {
+        top: auto;
+        bottom: 50%;
+      }
+    }
+    &.right {
+      .context-menu__content {
+        left: auto;
+        margin-left: -10px;
+        right: -180px;
+      }
+    }
+    &.left {
+      .context-menu__content {
+        left: -180px;
+        margin-right: -10px;
+        right: auto;
+      }
     }
     &.is-hover,
     &:hover {
