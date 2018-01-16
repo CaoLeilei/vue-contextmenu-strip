@@ -47,8 +47,6 @@ export default {
     this.contextMenu = this.$refs.contextMenu
     this.left = this.$el.offsetLeft
     this.top = this.$el.offsetTop
-    console.log(this)
-    console.log(this.$el)
   },
   watch: {
     show (value) {
@@ -63,8 +61,6 @@ export default {
       console.log(e)
       let clientX = e.clientX
       let clientY = e.clientY
-      console.log(clientX)
-      console.log(clientY)
       this.contextMenu.setPositions(clientX, clientY)
       this.showContextMenu = true
     },
