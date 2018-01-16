@@ -39,8 +39,8 @@ export default {
       type: Boolean,
       default: true
     },
-    clientX: Number,
-    clientY: Number
+    left: Number,
+    top: Number
   },
   data () {
     return {
@@ -76,13 +76,13 @@ export default {
     setPositions (x, y) {
       let clientWidth = window.innerWidth
       let clientHeight = window.innerHeight
-      let left = clientWidth - x < this.menuContentInnerWidth ? (x - this.clientX - this.menuContentInnerWidth) : x - this.clientX
-      let top = clientHeight - y < this.menuContentInnerHeight ? (y - this.clientY - this.menuContentInnerHeight) : y - this.clientY
+      let left = clientWidth - x < this.menuContentInnerWidth ? (x - this.left - this.menuContentInnerWidth) : x - this.left
+      let top = clientHeight - y < this.menuContentInnerHeight ? (y - this.top - this.menuContentInnerHeight) : y - this.top
       this.styleName = {
         left: left + 'px',
         top: top + 'px'
       }
-      this.getChildPosition(left + this.clientX, top + this.clientY, this.menus)
+      this.getChildPosition(left + this.left, top + this.top, this.menus)
     },
     getChildPosition (pX, pY, menus) {
       let top = pY

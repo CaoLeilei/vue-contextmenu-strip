@@ -6,8 +6,8 @@
     :show="showContextMenu"
     :menus="menus"
     :is-root="true"
-    :client-x="clientX"
-    :client-y="clientY"
+    :left="left"
+    :top="top"
     @click="menuItemClick">
   </vue-context-menu-content>
 </div>
@@ -31,8 +31,8 @@ export default {
   data () {
     return {
       contextMenu: null,
-      clientX: 0,
-      clientY: 0,
+      left: 0,
+      top: 0,
       showContextMenu: false
     }
   },
@@ -45,16 +45,10 @@ export default {
   },
   mounted () {
     this.contextMenu = this.$refs.contextMenu
-    this.clientX = this.$el.offsetLeft
-    this.clientY = this.$el.offsetTop
+    this.left = this.$el.offsetLeft
+    this.top = this.$el.offsetTop
+    console.log(this)
     console.log(this.$el)
-    // let menuContentInner = this.$refs['menuContentInner']
-    // if (menuContentInner) {
-    //   this.menuContentInner = menuContentInner
-    //   this.menuContentInnerWidth = menuContentInner.$el.clientWidth
-    //   this.menuContentInnerHeight = menuContentInner.$el.clientHeight
-    // }
-    // this.showContextMenu = false
   },
   watch: {
     show (value) {
@@ -66,8 +60,11 @@ export default {
   },
   methods: {
     contextmenu (e) {
+      console.log(e)
       let clientX = e.clientX
       let clientY = e.clientY
+      console.log(clientX)
+      console.log(clientY)
       this.contextMenu.setPositions(clientX, clientY)
       this.showContextMenu = true
     },

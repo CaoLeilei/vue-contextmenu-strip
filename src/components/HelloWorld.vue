@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <div style="900px; height:300px; margin:0 auto;">
+    <div style="width:900px; height:300px; margin:0 auto;">
       <vue-context-menu :menus="menu" @click="menuItemClick">
         <div style="width: 100%; height: 300px; border:1px solid #ddd;">你好这是一个天才的梦想</div>
       </vue-context-menu>
